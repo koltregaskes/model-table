@@ -10,7 +10,7 @@ A professional, interactive dashboard for tracking AI language models, their cap
 - **Professional Design**: Modern, responsive design with dark/light theme support
 - **Export Functionality**: Download filtered data as CSV
 - **Security-First**: Built with security best practices and CSP headers
-- **Mobile-Responsive**: Optimized for all devices and screen sizes
+- **Mobile-Responsive**: Optimised for all devices and screen sizes
 
 ## 📁 File Structure
 
@@ -141,11 +141,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Built with modern web standards and best practices
 - Designed for GitHub Pages hosting
-- Optimized for AI assistant maintenance
+- Optimised for AI assistant maintenance
 - Focused on security and performance
 
 ---
 
 **Last Updated**: June 2025  
 **Version**: 1.0.0  
-**Maintainer**: Your Name (@yourusername)
+**Maintainer**: Kol Tregaskes (@koltregaskes)
