@@ -1,2 +1,1 @@
-I need the actual Discord messages including their timestamp lines (date and time) so I can fill the date and time columns correctly. Could you paste a few of them exactly as they appear?2025-06-14 13:01:39
-025-06-01 00:00:00
+2025-06-01 00:00:00
