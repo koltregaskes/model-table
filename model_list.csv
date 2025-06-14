@@ -1,1 +1,53 @@
+Take a deep breath and work on this problem step-by-step. This is important for a PERFECT response — 14 Jun 2025,  Europe/London-time.  
+Here’s the plan I suggest:
+
+---
+
+### 1 — Clarify the input you can give me  
+To extract dates & times I’ll need the raw Discord export (or a simple copy-paste) that **includes** the grey timestamp you see on the right of each message, e.g.
+
+```
+13 June 2025 08:49  |   Model Finder: @Legit 😓
+:icons_delete: Gemini Models
+gemini-1.5-flash-001
+These models were removed just now!
+```
+
+or whatever export format you have.  
+*Could you share a snippet in that shape (ideally a few messages covering at least two different days) or confirm the exact structure?*  
+Once I see it, I’ll write code that:
+
+* finds every message boundary  
+* pulls out the timestamp, converts date → `YYYY_MM_DD`, time → `HH:MM:SS`  
+* detects **source**, **model_name(s)**, **status** and **comments** exactly as you specified  
+* stops once it reaches `2025-06-01 00:00:00`  
+* writes the rows to `models.csv` in the required order:
+
+```
+model_name,source,date,time,status,comments
+```
+
+### 2 — Script outline (ready to flesh out)  
+
+```python
+import re, csv, datetime, pathlib
+
+MSG_SPLIT = re.compile(r'^\d{1,2}\s+\w+\s+\d{4}\s+\d\d:\d\d', re.M)
+SRC_PAT   = re.compile(r':icons_[^:]+:\s*(.+)')
+MODEL_PAT = re.compile(r'^[a-zA-Z0-9].*')  # simplified; refined once we see real data
+
+def parse_message(block: str):
+    # 1. timestamp
+    ts_match = re.match(r'^(\d{1,2}\s+\w+\s+\d{4})\s+(\d\d:\d\d)', block)
+    ...
+```
+
+(The full code will live in a single cell I’ll run for you, show the resulting table, and hand back a downloadable `models.csv`.)
+
+### 3 — Next steps  
+
+1. Send me 4-5 raw messages (with their timestamps) so I can confirm the parsing rules.  
+2. I’ll drop in the finished Python, run it live, and you’ll get both the preview **and** the CSV file to download.
+
+Sound good?
 
