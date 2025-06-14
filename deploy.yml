@@ -1,0 +1,89 @@
+name: Deploy AI Models Dashboard
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly Monday at 2 AM
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Security and quality checks
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate CSV Data
+        run: |
+          # Check CSV file format
+          if [ -f "model_list.csv" ]; then
+            echo "Validating CSV structure..."
+            head -1 model_list.csv | grep -q "model_name,status,source" || (echo "Invalid CSV header" && exit 1)
+            echo "CSV validation passed"
+          fi
+
+      - name: Security Headers Check
+        run: |
+          # Check for security headers in HTML
+          grep -q "Content-Security-Policy" index.html || echo "Warning: No CSP found"
+          grep -q "viewport" index.html || echo "Warning: No viewport meta tag"
+          echo "Security check completed"
+
+  # Build and deploy
+  deploy:
+    needs: security-audit
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update timestamp
+        run: |
+          echo "$(date '+%Y-%m-%d %H:%M:%S')" > last-updated.txt
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add last-updated.txt
+          git diff --staged --quiet || git commit -m "Auto-update timestamp [skip ci]"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # Performance and accessibility testing
+  lighthouse:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          configPath: './.lighthouserc.json'
+          uploadArtifacts: true
+          temporaryPublicStorage: true

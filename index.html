@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Models Dashboard</title>
+    <meta name="description" content="Comprehensive dashboard for tracking AI language models, their capabilities, pricing, and availability.">
+    <meta name="keywords" content="AI, models, LLM, GPT, Claude, Gemini, dashboard">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23218089'%3E%3Cpath d='M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z'/%3E%3C/svg%3E">
+</head>
+<body>
+    <header class="hero-banner">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">AI Models Dashboard</h1>
+                    <p class="hero-subtitle">Comprehensive tracking of AI language models, capabilities, and pricing</p>
+                </div>
+                <div class="last-updated">
+                    <span class="last-updated-label">Last Updated</span>
+                    <span class="last-updated-date" id="lastUpdatedDate">Loading...</span>
+                </div>
+            </div>
+            <div class="theme-toggle">
+                <button class="btn btn--outline btn--sm" id="themeToggle" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <!-- Filters Section -->
+        <section class="filters-section">
+            <div class="filters-header">
+                <h2>Filters & Search</h2>
+                <button class="btn btn--secondary btn--sm" id="clearFilters">Clear All</button>
+            </div>
+            
+            <div class="filters-grid">
+                <div class="search-container">
+                    <label for="searchInput" class="form-label">Search Models</label>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search by model name, provider, or features...">
+                </div>
+                
+                <div class="filter-group">
+                    <label for="statusFilter" class="form-label">Status</label>
+                    <select id="statusFilter" class="form-control">
+                        <option value="all">All Status</option>
+                        <option value="Available">Available</option>
+                        <option value="Limited Access">Limited Access</option>
+                        <option value="Deprecated">Deprecated</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="sourceFilter" class="form-label">Provider</label>
+                    <select id="sourceFilter" class="form-control">
+                        <option value="all">All Providers</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="dateFromFilter" class="form-label">Release Date From</label>
+                    <input type="date" id="dateFromFilter" class="form-control">
+                </div>
+                
+                <div class="filter-group">
+                    <label for="dateToFilter" class="form-label">Release Date To</label>
+                    <input type="date" id="dateToFilter" class="form-control">
+                </div>
+            </div>
+            
+            <!-- Active Tags -->
+            <div class="active-tags" id="activeTags" style="display: none;">
+                <div class="active-tags-header">
+                    <h3>Active Filters</h3>
+                </div>
+                <div class="tags-container" id="tagsContainer"></div>
+            </div>
+        </section>
+
+        <!-- Statistics Overview -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalModels">0</div>
+                    <div class="stat-label">Total Models</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="availableModels">0</div>
+                    <div class="stat-label">Available</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgCost">$0.00</div>
+                    <div class="stat-label">Avg Cost/1K</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="topProvider">-</div>
+                    <div class="stat-label">Top Provider</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Models Table -->
+        <section class="table-section">
+            <div class="table-header">
+                <h2>AI Models Database</h2>
+                <div class="table-actions">
+                    <button class="btn btn--outline btn--sm" id="exportBtn">Export CSV</button>
+                    <span class="table-count">Showing <span id="tableCount">0</span> models</span>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <div class="loading-state" id="loadingState">
+                    <div class="loading-spinner"></div>
+                    <p>Loading AI models data...</p>
+                </div>
+                
+                <div class="error-state" id="errorState" style="display: none;">
+                    <div class="error-icon">⚠️</div>
+                    <h3>Error Loading Data</h3>
+                    <p>Unable to load the models data. Please try refreshing the page.</p>
+                    <button class="btn btn--primary" onclick="location.reload()">Retry</button>
+                </div>
+                
+                <table class="models-table" id="modelsTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-column="model_name">
+                                Model Name
+                                <span class="sort-indicator"></span>
+                            </th>
+                            <th class="sortable" data-column="ai_tab">
+                                AI Provider
+                                <span class="sort-indicator"></span>
+                            </th>
+                            <th class="sortable" data-column="status">
+                                Status
+                                <span class="sort-indicator"></span>
+                            </th>
+                            <th class="sortable" data-column="source">
+                                Source
+                                <span class="sort-indicator"></span>
+                            </th>
+                            <th class="sortable" data-column="release_date">
+                                Release Date
+                                <span class="sort-indicator"></span>
+                            </th>
+                            <th class="sortable" data-column="parameters">
+                                Parameters
+                                <span class="sort-indicator"></span>
+                            </th>
+                            <th class="sortable" data-column="context_length">
+                                Context Length
+                                <span class="sort-indicator"></span>
+                            </th>
+                            <th class="sortable" data-column="cost_per_1k_tokens">
+                                Cost/1K Tokens
+                                <span class="sort-indicator"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="modelsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Provider Tags -->
+        <section class="provider-tags-section">
+            <h3>Filter by Provider</h3>
+            <div class="provider-tags" id="providerTags"></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>AI Models Dashboard</h4>
+                    <p>Professional tracking of AI language models and their capabilities.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Data Sources</h4>
+                    <p>Data is regularly updated from official provider announcements and documentation.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Usage</h4>
+                    <p>This dashboard is open source and available on <a href="https://github.com/koltregaskes/model-table" target="_blank">GitHub</a>.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 AI Models Dashboard. Built for the community.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
