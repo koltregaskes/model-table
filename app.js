@@ -6,10 +6,9 @@ class AIModelsDashboard {
         this.activeFilters = new Set();
         this.providers = new Set();
         
-        // CSV URLs
-        this.csvUrl = 'https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/a7121802c215fa8257dae6657eb87e5e/e68df3ef-184b-4b6e-91c1-4a11640f6c98/24bbc652.csv';
-        this.headersUrl = 'https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/a7121802c215fa8257dae6657eb87e5e/e68df3ef-184b-4b6e-91c1-4a11640f6c98/f5ce0f92.csv';
-        this.lastUpdatedUrl = 'https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/a7121802c215fa8257dae6657eb87e5e/e68df3ef-184b-4b6e-91c1-4a11640f6c98/77d148a5.txt';
+        // CSV URLs (use local files)
+        this.csvUrl = 'model_list.csv';
+        this.lastUpdatedUrl = 'last-updated.txt';
         
         this.init();
     }
